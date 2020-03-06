@@ -1,6 +1,6 @@
 import pygame
 from pygame import locals as pygame_locals
-from blocks.block import Block, BlockShape
+from src import Platform, Brick, Ball
 from functools import partial
 from color import Color
 
@@ -39,21 +39,23 @@ class Application():
             pygame_locals.KEYDOWN: self._handle_key_down,
             pygame_locals.KEYUP: self._handle_key_up,
         }
-        self.current = None
-        self.block_list = pygame.sprite.Group()
+        self.ball_list = pygame.sprite.Group()
+        self.brick_list = pygame.sprite.Group()
         self.all_sprites_list = pygame.sprite.Group()
+
+        self.player = Platform(self, Color.SILVER)
+        self.all_sprites_list.add(self.player)
+
+        tmp = Ball(self, Color.RED)
+        self.ball_list.add(tmp)
+        self.all_sprites_list.add(tmp)
+
+        tmp = Brick(self, Color.BLUE, (0,0))
+        self.brick_list.add(tmp)
+        self.all_sprites_list.add(tmp)
 
     def start(self):
         self.in_progress = True
-
-        self.current = Block(self, Color.SILVER.value, BlockShape.I, (50, 300))
-        self.block_list.add(self.current)
-        self.all_sprites_list.add(self.current)
-
-        self.current = Block(self, Color.YELLOW.value, BlockShape.L, (0, 0))
-        self.current.rotate(180)
-        self.block_list.add(self.current)
-        self.all_sprites_list.add(self.current)
 
         pygame.display.update()
         while self.in_progress:
@@ -72,10 +74,8 @@ class Application():
 
     def _handle_key_down(self, event):
         key_map = {
-            276: partial(self._move_curent, "left", True),
-            273: partial(self._rotate_current, "left"),
-            275: partial(self._move_curent, "right", True),
-            274: partial(self._rotate_current, "right"),
+            276: partial(self._move_player, "left", True),
+            275: partial(self._move_player, "right", True),
         }
         if event.key in key_map:
             key_map[event.key]()
@@ -83,24 +83,18 @@ class Application():
 
     def _handle_key_up(self, event):
         key_map = {
-            276: partial(self._move_curent, "left", False),
-            275: partial(self._move_curent, "right", False),
+            276: partial(self._move_player, "left", False),
+            275: partial(self._move_player, "right", False),
         }
         if event.key in key_map:
             key_map[event.key]()
         print("up {}".format(event.key))
     
-    def _move_curent(self, direction, state):
+    def _move_player(self, direction, state):
         if state:
-            self.current.start_move(direction)
+            self.player.start_move(direction)
         else:
-            self.current.stop_move()
-
-    def _rotate_current(self, direction):
-        if direction == "left":
-            self.current.rotate(-90)
-        else:
-            self.current.rotate(90)
+            self.player.stop_move()
 
 
 if __name__ == "__main__":
