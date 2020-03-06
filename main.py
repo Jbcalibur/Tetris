@@ -54,8 +54,9 @@ class Application():
 
     def init_brick_list(self):
         brick_size = (50, 25)
+        brick_line = 5
         y = 0
-        for _ in range(0, 5):
+        for _ in range(0, brick_line):
             x = 0
             for target_list in range(0, int(self.size[0]/brick_size[0])):
                 tmp = Brick(self, (x, y), brick_size)

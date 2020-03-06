@@ -17,9 +17,8 @@ class Ball(DefaultSprtite):
         if self.rect.left <= 0:
             self.velocity[0] = -self.velocity[0]
         if self.rect.bottom > self.parent.size[1]:
-            self.parent.in_progress = False
-            self.parent.started = False
-            self.velocity[1] = -self.velocity[1]
+            self.velocity = [0, 0]
+            print("Game Over")
         if self.rect.top < 0:
             self.velocity[1] = -self.velocity[1]
 
@@ -51,7 +50,7 @@ class Ball(DefaultSprtite):
         x = randint(4, 8)
         if x == 0:
             x += 1
-        y = randint(-8, 8)
+        y = randint(-randint(4, 8), randint(4, 8))
         if y == 0:
             y += 1
         self.velocity = [x, y]
