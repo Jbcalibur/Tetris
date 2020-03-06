@@ -1,8 +1,8 @@
-import pygame
 from pygame import locals as pygame_locals
 from src import Platform, Brick, Ball
 from functools import partial
 from color import Color
+import pygame
 
 __inst__ = None
 
@@ -30,6 +30,7 @@ class Application():
         self.name = name
         self.size = size
         self.in_progress = False
+        self.started = False
         pygame.display.set_caption(self.name)
         self.window = pygame.display.set_mode(self.size)
         self.window.fill(Color.WHITE.value)
@@ -46,13 +47,23 @@ class Application():
         self.player = Platform(self, Color.SILVER)
         self.all_sprites_list.add(self.player)
 
-        tmp = Ball(self, Color.RED)
-        self.ball_list.add(tmp)
-        self.all_sprites_list.add(tmp)
+        self.ball = Ball(self, Color.RED)
+        self.ball_list.add(self.ball)
+        self.all_sprites_list.add(self.ball)
 
-        tmp = Brick(self, Color.BLUE, (0,0))
-        self.brick_list.add(tmp)
-        self.all_sprites_list.add(tmp)
+        self.init_brick_list()
+
+    def init_brick_list(self):
+        brick_size = 50
+        y = 0
+        for _ in range(0, 5):
+            x = 0
+            for target_list in range(0, int(self.size[0]/brick_size)):
+                tmp = Brick(self, (x, y), brick_size)
+                self.brick_list.add(tmp)
+                self.all_sprites_list.add(tmp)
+                x += brick_size
+            y += brick_size
 
     def start(self):
         self.in_progress = True
@@ -76,6 +87,7 @@ class Application():
         key_map = {
             276: partial(self._move_player, "left", True),
             275: partial(self._move_player, "right", True),
+            32: self._start
         }
         if event.key in key_map:
             key_map[event.key]()
@@ -89,13 +101,19 @@ class Application():
         if event.key in key_map:
             key_map[event.key]()
         print("up {}".format(event.key))
-    
+
     def _move_player(self, direction, state):
-        if state:
-            self.player.start_move(direction)
-        else:
-            self.player.stop_move()
+        if self.started:
+            if state:
+                self.player.start_move(direction)
+            else:
+                self.player.stop_move()
+    
+    def _start(self):
+        if not self.started:
+            self.started = True
+            self.ball.start()
 
 
 if __name__ == "__main__":
-    create_application("Tetris", (500, 500)).start()
+    create_application("BrickBreaker", (500, 500)).start()
