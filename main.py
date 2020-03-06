@@ -2,6 +2,7 @@ from pygame import locals as pygame_locals
 from src import Platform, Brick, Ball
 from functools import partial
 from color import Color
+import sqlite3
 import pygame
 
 __inst__ = None
@@ -41,11 +42,16 @@ class Application():
             pygame_locals.KEYDOWN: self._handle_key_down,
             pygame_locals.KEYUP: self._handle_key_up,
         }
+
+        self.conn = sqlite3.connect('tetris.db')
+        self.cursor = self.conn.cursor()
+        self.init_base()
+
         self.ball_list = pygame.sprite.Group()
         self.brick_list = pygame.sprite.Group()
         self.all_sprites_list = pygame.sprite.Group()
 
-        self.player = Platform(self, Color.SILVER)
+        self.player = Platform(self, Color.TEAL)
         self.all_sprites_list.add(self.player)
 
         self.ball = Ball(self, Color.RED)
@@ -66,6 +72,47 @@ class Application():
                 x += brick_size[0]
             y += brick_size[1]
 
+    def init_base(self):
+        self.cursor.execute("""
+        CREATE TABLE IF NOT EXISTS scores(
+            id INTEGER PRIMARY KEY AUTOINCREMENT UNIQUE,
+            joueur TEXT,
+            score INTEGER
+        )
+        """)
+        self.conn.commit()
+
+        self.cursor.execute(
+            """INSERT INTO scores(joueur, score) VALUES(?, ?)""", ("Inconnu", 0))
+
+    def draw_game_over(self):
+        font = pygame.font.SysFont('comicsans', 70)
+        label = font.render('Game OVER', 1, Color.BLACK.value)
+        sx = (self.size[0]/2)-120
+        sy = (self.size[1]/2)
+        self.window.blit(label, (sx, sy))
+
+    def draw_score(self):
+        font = pygame.font.SysFont('comicsans', 30)
+        label = font.render('Score : ', 1, Color.SILVER.value)
+        nbr = font.render(str(self.score), 1, Color.SILVER.value)
+        sx = 0
+        sy = self.size[1] - 60
+        self.window.blit(label, (sx + 10, sy))
+        self.window.blit(nbr, (sx + 100, sy))
+
+    def draw_best_score(self):
+        self.cursor.execute("""SELECT max(score) FROM scores""")
+        best_score = self.cursor.fetchall()[0][0]
+        font = pygame.font.SysFont('comicsans', 30)
+        label = font.render('Meilleur score : ', 1, Color.SILVER.value)
+        nbr = font.render(str(best_score), 1, Color.SILVER.value)
+        sx = 0
+        sy = self.size[1] - 30
+
+        self.window.blit(label, (sx + 10, sy))
+        self.window.blit(nbr, (sx + 180, sy))
+
     def start(self):
         self.in_progress = True
 
@@ -77,9 +124,10 @@ class Application():
                 if event.type in self.event_map:
                     self.event_map[event.type](event)
             self.window.fill(Color.WHITE.value)
+            self.draw_score()
+            self.draw_best_score()
             self.all_sprites_list.update()
             self.all_sprites_list.draw(self.window)
-            print(self.score)
             self.clock.tick(30)
             pygame.display.flip()
 

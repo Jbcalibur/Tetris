@@ -17,8 +17,10 @@ class Ball(DefaultSprtite):
         if self.rect.left <= 0:
             self.velocity[0] = -self.velocity[0]
         if self.rect.bottom > self.parent.size[1]:
+            self.parent.draw_game_over()
             self.velocity = [0, 0]
-            print("Game Over")
+            self.parent.cursor.execute("""INSERT INTO scores(joueur, score) VALUES(?, ?)""", ("Coco", self.parent.score))
+            self.parent.conn.commit()
         if self.rect.top < 0:
             self.velocity[1] = -self.velocity[1]
 
