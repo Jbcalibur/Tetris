@@ -53,6 +53,7 @@ class Application():
         self.all_sprites_list.add(self.ball)
 
     def init_brick_list(self):
+        self.ball.set_pos()
         brick_size = (50, 25)
         brick_line = 5
         y = 0
@@ -107,7 +108,7 @@ class Application():
             self.player.start_move(direction)
         else:
             self.player.stop_move()
-    
+
     def _start(self):
         if not self.started:
             self.started = True

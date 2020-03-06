@@ -14,8 +14,9 @@ class Brick(DefaultSprtite):
             1: Color.RED,
             0: Color.YELLOW,
         }
-        self.state = randint(0,5)
-        DefaultSprtite.__init__(self, parent, self.state_color[self.state], size)
+        self.state = randint(0, 5)
+        DefaultSprtite.__init__(
+            self, parent, self.state_color[self.state], size)
         self.rect = self.draw()
         self.rect.x = position[0]
         self.rect.y = position[1]
@@ -25,16 +26,16 @@ class Brick(DefaultSprtite):
         self.color = self.state_color[self.state].value
         rect = pygame.draw.rect(
             self.image, self.color, (0, 0, *self.size))
-        pygame.draw.rect(self.image, Color.BLACK.value, (0, 0, self.size[0]-1, self.size[1]-1), 2)
+        pygame.draw.rect(self.image, Color.BLACK.value,
+                         (0, 0, self.size[0]-1, self.size[1]-1), 2)
         return rect
-        
 
     def update(self):
         ball_hit_list = pygame.sprite.spritecollide(
             self, self.parent.ball_list, False, collided=pygame.sprite.collide_mask)
         for hit in ball_hit_list:
             if self.state > 0:
-                self.state -=1
+                self.state -= 1
                 self.draw()
                 self.parent.ball.bounce(self.rect)
                 self.parent.score += 10
@@ -42,4 +43,3 @@ class Brick(DefaultSprtite):
                 self.parent.ball.bounce(self.rect)
                 self.kill()
                 self.parent.score += 20
-        
