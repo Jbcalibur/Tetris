@@ -43,7 +43,7 @@ class Application():
             pygame_locals.KEYUP: self._handle_key_up,
         }
 
-        self.conn = sqlite3.connect('tetris.db')
+        self.conn = sqlite3.connect('brick.db')
         self.cursor = self.conn.cursor()
         self.init_base()
 
