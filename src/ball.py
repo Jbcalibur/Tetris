@@ -48,4 +48,10 @@ class Ball(DefaultSprtite):
             self.velocity[0] = -self.velocity[0]
 
     def start(self):
-        self.velocity = [randint(4, 8), randint(-8, 8)]
+        x = randint(4, 8)
+        if x == 0:
+            x += 1
+        y = randint(-8, 8)
+        if y == 0:
+            y += 1
+        self.velocity = [x, y]

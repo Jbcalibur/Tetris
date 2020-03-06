@@ -52,25 +52,25 @@ class Application():
         self.ball_list.add(self.ball)
         self.all_sprites_list.add(self.ball)
 
-        self.init_brick_list()
-
     def init_brick_list(self):
-        brick_size = 50
+        brick_size = (50, 25)
         y = 0
         for _ in range(0, 5):
             x = 0
-            for target_list in range(0, int(self.size[0]/brick_size)):
+            for target_list in range(0, int(self.size[0]/brick_size[0])):
                 tmp = Brick(self, (x, y), brick_size)
                 self.brick_list.add(tmp)
                 self.all_sprites_list.add(tmp)
-                x += brick_size
-            y += brick_size
+                x += brick_size[0]
+            y += brick_size[1]
 
     def start(self):
         self.in_progress = True
 
         pygame.display.update()
         while self.in_progress:
+            if len(self.brick_list.sprites()) == 0:
+                self.init_brick_list()
             for event in pygame.event.get():
                 if event.type in self.event_map:
                     self.event_map[event.type](event)
@@ -114,4 +114,4 @@ class Application():
 
 
 if __name__ == "__main__":
-    create_application("BrickBreaker", (500, 500)).start()
+    create_application("BrickBreaker", (500, 250)).start()

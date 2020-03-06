@@ -15,7 +15,7 @@ class Brick(DefaultSprtite):
             0: Color.YELLOW,
         }
         self.state = randint(0,5)
-        DefaultSprtite.__init__(self, parent, self.state_color[self.state], (size, size))
+        DefaultSprtite.__init__(self, parent, self.state_color[self.state], size)
         self.rect = self.draw()
         self.rect.x = position[0]
         self.rect.y = position[1]
