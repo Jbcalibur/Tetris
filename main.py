@@ -46,7 +46,7 @@ class Application():
     def start(self):
         self.in_progress = True
 
-        self.current = Block(self, Color.SILVER.value, BlockShape.T, (50, 300))
+        self.current = Block(self, Color.SILVER.value, BlockShape.I, (50, 300))
         self.block_list.add(self.current)
         self.all_sprites_list.add(self.current)
 
