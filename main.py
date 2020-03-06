@@ -27,6 +27,7 @@ def get_application():
 class Application():
     def __init__(self, name, size):
         pygame.init()
+        self.score = 0
         self.name = name
         self.size = size
         self.in_progress = False
@@ -76,12 +77,12 @@ class Application():
             self.window.fill(Color.WHITE.value)
             self.all_sprites_list.update()
             self.all_sprites_list.draw(self.window)
+            print(self.score)
             self.clock.tick(30)
             pygame.display.flip()
-        pygame.quit()
 
     def _stop(self, event):
-        self.in_progress = False
+        pygame.quit()
 
     def _handle_key_down(self, event):
         key_map = {
@@ -91,7 +92,6 @@ class Application():
         }
         if event.key in key_map:
             key_map[event.key]()
-        print("down {}".format(event.key))
 
     def _handle_key_up(self, event):
         key_map = {
@@ -100,14 +100,12 @@ class Application():
         }
         if event.key in key_map:
             key_map[event.key]()
-        print("up {}".format(event.key))
 
     def _move_player(self, direction, state):
-        if self.started:
-            if state:
-                self.player.start_move(direction)
-            else:
-                self.player.stop_move()
+        if state:
+            self.player.start_move(direction)
+        else:
+            self.player.stop_move()
     
     def _start(self):
         if not self.started:

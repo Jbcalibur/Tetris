@@ -37,7 +37,9 @@ class Brick(DefaultSprtite):
                 self.state -=1
                 self.draw()
                 self.parent.ball.bounce(self.rect)
+                self.parent.score += 10
             else:
                 self.parent.ball.bounce(self.rect)
                 self.kill()
+                self.parent.score += 20
         

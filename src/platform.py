@@ -20,6 +20,8 @@ class Platform(DefaultSprtite):
             self, self.parent.ball_list, False, collided=pygame.sprite.collide_mask)
         if (self.rect.left + self.move >= 0) and (self.rect.right + self.move <= self.parent.size[0]+self.move_speed) and len(brick_hit_list) == 0:
             self.rect.x += self.move
+            if not self.parent.started:
+                self.parent.ball.set_pos()
         for hit in ball_hit_list:
             self.parent.ball.bounce(self.rect)
 
